@@ -1,0 +1,45 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+  threads:
+    virtual:
+      enabled: true
+  cloud:
+    gateway:
+      server:
+        webflux:
+          routes:
+            - id: usuario-service
+              uri: lb://usuario-service
+              predicates:
+                - Path=/api/usuarios/**
+            - id: pedido-service
+              uri: lb://pedido-service
+              predicates:
+                - Path=/api/pedidos/**
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus,metrics
+  endpoint:
+    health:
+      show-details: when_authorized
+  metrics:
+    tags:
+      application: ${spring.application.name}
+  tracing:
+    sampling:
+      probability: 1.0
+    export:
+      zipkin:
+        endpoint: http://localhost:9411/api/v2/spans
