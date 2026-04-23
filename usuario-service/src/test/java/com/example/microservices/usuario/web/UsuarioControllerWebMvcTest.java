@@ -32,7 +32,8 @@ class UsuarioControllerWebMvcTest {
     void obtenerDevuelveJson() throws Exception {
         when(usuarioService.obtener(1L)).thenReturn(new UsuarioResponse(1L, "Ana", "ana@example.com"));
 
-        mockMvc.perform(get("/api/usuarios/1"))
+        mockMvc.perform(get("/api/usuarios/1")
+                        .header("X-User-Role", "USER"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.nombre").value("Ana"));
     }
@@ -43,6 +44,7 @@ class UsuarioControllerWebMvcTest {
                 .thenReturn(new UsuarioResponse(1L, "Ana", "ana@example.com"));
 
         mockMvc.perform(post("/api/usuarios")
+                        .header("X-User-Role", "ADMIN")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"nombre\":\"Ana\",\"email\":\"ana@example.com\"}"))
                 .andExpect(status().isCreated());
@@ -54,6 +56,7 @@ class UsuarioControllerWebMvcTest {
                 .thenReturn(new UsuarioResponse(1L, "Ana", "ana@example.com"));
 
         mockMvc.perform(put("/api/usuarios/1")
+                        .header("X-User-Role", "ADMIN")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"nombre\":\"Ana\",\"email\":\"ana@example.com\"}"))
                 .andExpect(status().isOk());
@@ -61,7 +64,8 @@ class UsuarioControllerWebMvcTest {
 
     @Test
     void eliminar() throws Exception {
-        mockMvc.perform(delete("/api/usuarios/1"))
+        mockMvc.perform(delete("/api/usuarios/1")
+                        .header("X-User-Role", "ADMIN"))
                 .andExpect(status().isNoContent());
     }
 }

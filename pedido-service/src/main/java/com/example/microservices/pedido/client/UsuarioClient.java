@@ -27,6 +27,7 @@ public class UsuarioClient {
         try {
             webClient.get()
                     .uri("/api/usuarios/{id}", usuarioId)
+                    .header("X-Internal-Call", "true")
                     .retrieve()
                     .onStatus(HttpStatusCode::is5xxServerError, response -> reactor.core.publisher.Mono
                             .error(new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE,

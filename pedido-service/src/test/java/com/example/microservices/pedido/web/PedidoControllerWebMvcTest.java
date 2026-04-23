@@ -32,7 +32,8 @@ class PedidoControllerWebMvcTest {
         when(pedidoService.obtener(1L)).thenReturn(
                 new PedidoResponse(1L, 2L, "desc", Instant.parse("2026-01-01T00:00:00Z")));
 
-        mockMvc.perform(get("/api/pedidos/1"))
+        mockMvc.perform(get("/api/pedidos/1")
+                        .header("X-User-Role", "USER"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.descripcion").value("desc"));
     }
@@ -43,6 +44,7 @@ class PedidoControllerWebMvcTest {
                 .thenReturn(new PedidoResponse(1L, 2L, "nuevo", Instant.parse("2026-01-01T00:00:00Z")));
 
         mockMvc.perform(post("/api/pedidos")
+                        .header("X-User-Role", "ADMIN")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"usuarioId\":2,\"descripcion\":\"nuevo\"}"))
                 .andExpect(status().isCreated());

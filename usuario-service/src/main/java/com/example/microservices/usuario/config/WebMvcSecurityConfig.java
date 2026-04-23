@@ -1,0 +1,22 @@
+package com.example.microservices.usuario.config;
+
+import com.example.microservices.usuario.security.RoleAuthorizationInterceptor;
+
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+@Configuration
+public class WebMvcSecurityConfig implements WebMvcConfigurer {
+
+    private final RoleAuthorizationInterceptor roleAuthorizationInterceptor;
+
+    public WebMvcSecurityConfig(RoleAuthorizationInterceptor roleAuthorizationInterceptor) {
+        this.roleAuthorizationInterceptor = roleAuthorizationInterceptor;
+    }
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(roleAuthorizationInterceptor).addPathPatterns("/api/**");
+    }
+}
