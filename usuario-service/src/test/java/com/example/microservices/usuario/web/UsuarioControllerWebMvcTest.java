@@ -2,6 +2,7 @@ package com.example.microservices.usuario.web;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -67,5 +68,15 @@ class UsuarioControllerWebMvcTest {
         mockMvc.perform(delete("/api/usuarios/1")
                         .header("X-User-Role", "ADMIN"))
                 .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void crearSinRolDevuelve401() throws Exception {
+        mockMvc.perform(post("/api/usuarios")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"nombre\":\"Ana\",\"email\":\"ana@example.com\"}"))
+                .andExpect(status().isUnauthorized());
+
+        verifyNoInteractions(usuarioService);
     }
 }

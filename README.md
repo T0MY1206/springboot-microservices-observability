@@ -77,6 +77,11 @@ docker compose up -d
   - `http://localhost:8080/actuator/metrics`
   - `http://localhost:8080/actuator/prometheus`
 
+### Auth JWT (gateway)
+- Emitir token: `POST http://localhost:8080/auth/token`
+  - Body ejemplo: `{"username":"admin","role":"ADMIN"}`
+- Usar el token en llamadas a API: `Authorization: Bearer <accessToken>`
+
 ### Comandos Maven (ejemplo)
 
 Desde la raíz del repo, usando Maven del sistema o `.tools`:
@@ -115,7 +120,16 @@ mvn test
 
 - Health: `/actuator/health`
 - Prometheus: `/actuator/prometheus` (expuesto en los puertos indicados arriba)
-- Trazas: configuración de Zipkin en `application.yml` (`management.zipkin.tracing.endpoint`)
+- Trazas: configuración de Zipkin en `application.yml` (`management.tracing.export.zipkin.endpoint`)
+
+## OpenAPI / Swagger
+
+- Usuario service:
+  - OpenAPI JSON: `http://localhost:8081/v3/api-docs`
+  - Swagger UI: `http://localhost:8081/swagger-ui/index.html`
+- Pedido service:
+  - OpenAPI JSON: `http://localhost:8082/v3/api-docs`
+  - Swagger UI: `http://localhost:8082/swagger-ui/index.html`
 
 ## Notas
 

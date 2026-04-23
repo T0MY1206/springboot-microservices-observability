@@ -6,6 +6,8 @@ import com.example.microservices.usuario.service.UsuarioService;
 
 import jakarta.validation.Valid;
 
+import io.swagger.v3.oas.annotations.Operation;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,28 +30,33 @@ public class UsuarioController {
     }
 
     @GetMapping
+    @Operation(summary = "Listar usuarios")
     public List<UsuarioResponse> listar() {
         return usuarioService.listar();
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Obtener usuario por id")
     public UsuarioResponse obtener(@PathVariable Long id) {
         return usuarioService.obtener(id);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @Operation(summary = "Crear usuario (solo ADMIN)")
     public UsuarioResponse crear(@Valid @RequestBody CrearUsuarioRequest request) {
         return usuarioService.crear(request);
     }
 
     @PutMapping("/{id}")
+    @Operation(summary = "Actualizar usuario (solo ADMIN)")
     public UsuarioResponse actualizar(@PathVariable Long id, @Valid @RequestBody ActualizarUsuarioRequest request) {
         return usuarioService.actualizar(id, request);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Operation(summary = "Eliminar usuario (solo ADMIN)")
     public void eliminar(@PathVariable Long id) {
         usuarioService.eliminar(id);
     }

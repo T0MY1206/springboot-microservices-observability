@@ -1,6 +1,7 @@
 package com.example.microservices.pedido.web;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -48,5 +49,16 @@ class PedidoControllerWebMvcTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"usuarioId\":2,\"descripcion\":\"nuevo\"}"))
                 .andExpect(status().isCreated());
+    }
+
+    @Test
+    void crearConRolUserDevuelve403() throws Exception {
+        mockMvc.perform(post("/api/pedidos")
+                        .header("X-User-Role", "USER")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"usuarioId\":2,\"descripcion\":\"nuevo\"}"))
+                .andExpect(status().isForbidden());
+
+        verifyNoInteractions(pedidoService);
     }
 }

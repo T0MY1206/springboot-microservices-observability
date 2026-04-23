@@ -6,6 +6,8 @@ import com.example.microservices.pedido.service.PedidoService;
 
 import jakarta.validation.Valid;
 
+import io.swagger.v3.oas.annotations.Operation;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,17 +28,20 @@ public class PedidoController {
     }
 
     @GetMapping
+    @Operation(summary = "Listar pedidos")
     public List<PedidoResponse> listar() {
         return pedidoService.listar();
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Obtener pedido por id")
     public PedidoResponse obtener(@PathVariable Long id) {
         return pedidoService.obtener(id);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @Operation(summary = "Crear pedido (solo ADMIN)")
     public PedidoResponse crear(@Valid @RequestBody CrearPedidoRequest request) {
         return pedidoService.crear(request);
     }
