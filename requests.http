@@ -1,0 +1,96 @@
+### Variables base
+@gateway = http://localhost:8080
+@usuarioService = http://localhost:8081
+@pedidoService = http://localhost:8082
+
+### 1) Obtener token ADMIN
+POST {{gateway}}/auth/token
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "role": "ADMIN"
+}
+
+> {%
+  client.global.set("adminToken", response.body.accessToken);
+%}
+
+### 2) Obtener token USER
+POST {{gateway}}/auth/token
+Content-Type: application/json
+
+{
+  "username": "user",
+  "role": "USER"
+}
+
+> {%
+  client.global.set("userToken", response.body.accessToken);
+%}
+
+### 3) Crear usuario (ADMIN) - OK
+POST {{gateway}}/api/usuarios
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+{
+  "nombre": "Usuario Demo",
+  "email": "demo_{{$timestamp}}@example.com"
+}
+
+> {%
+  client.global.set("usuarioId", response.body.id);
+%}
+
+### 4) Crear pedido (ADMIN) - OK
+POST {{gateway}}/api/pedidos
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+{
+  "usuarioId": {{usuarioId}},
+  "descripcion": "Pedido creado por ADMIN"
+}
+
+> {%
+  client.global.set("pedidoId", response.body.id);
+%}
+
+### 5) Listar usuarios (USER) - OK
+GET {{gateway}}/api/usuarios
+Authorization: Bearer {{userToken}}
+
+### 6) Listar pedidos (USER) - OK
+GET {{gateway}}/api/pedidos
+Authorization: Bearer {{userToken}}
+
+### 7) Crear usuario con USER - debe fallar (403)
+POST {{gateway}}/api/usuarios
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+{
+  "nombre": "No Permitido",
+  "email": "forbidden_{{$timestamp}}@example.com"
+}
+
+### 8) Crear pedido con USER - debe fallar (403)
+POST {{gateway}}/api/pedidos
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+{
+  "usuarioId": {{usuarioId}},
+  "descripcion": "Pedido no permitido para USER"
+}
+
+### 9) Llamada sin token - debe fallar (401)
+GET {{gateway}}/api/usuarios
+
+### 10) OpenAPI usuario-service
+GET {{usuarioService}}/v3/api-docs
+
+### 11) OpenAPI pedido-service
+GET {{pedidoService}}/v3/api-docs
+
